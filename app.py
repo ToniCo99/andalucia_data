@@ -43,34 +43,7 @@ app.layout = html.Div([
             multi=True
         )
     ]),
-    dcc.Graph(id='export-line-chart'),
-    html.Hr(),
-    html.H2("Consulta específica de ventas"),
-    html.Div([
-        html.Label("Seleccione una Provincia"),
-        dcc.Dropdown(
-            id='single-province-dropdown',
-            options=[{'label': province, 'value': province} for province in df['Provincia'].unique()],
-            value=df['Provincia'].unique()[0]
-        )
-    ]),
-    html.Div([
-        html.Label("Seleccione un Año"),
-        dcc.Dropdown(
-            id='year-dropdown',
-            options=[{'label': year, 'value': year} for year in df['Año'].unique()],
-            value=df['Año'].unique()[0]
-        )
-    ]),
-    html.Div([
-        html.Label("Seleccione un Sector"),
-        dcc.Dropdown(
-            id='single-sector-dropdown',
-            options=[{'label': sector, 'value': sector} for sector in df['Sector'].unique()],
-            value=df['Sector'].unique()[0]
-        )
-    ]),
-    html.Div(id='result-output', style={'margin-top': '20px', 'font-weight': 'bold', 'font-size': '20px'})
+    dcc.Graph(id='export-line-chart')
 ])
 
 @app.callback(
@@ -89,19 +62,8 @@ def update_line_chart(selected_provinces, selected_sectors):
     fig.update_traces(hovertemplate='Año=%{x}<br>Volumen=%{y:,.2f} €')
     return fig
 
-@app.callback(
-    Output('result-output', 'children'),
-    [Input('single-province-dropdown', 'value'),
-     Input('year-dropdown', 'value'),
-     Input('single-sector-dropdown', 'value')]
-)
-def update_specific_query(province, year, sector):
-    filtered_df = df[(df['Provincia'] == province) & (df['Año'] == year) & (df['Sector'] == sector)]
-    if not filtered_df.empty:
-        volume = filtered_df['Volumen'].values[0]
-        return f"En {year}, la venta de {sector} en {province} fue de {volume:,.2f} €"
-    else:
-        return "No hay datos disponibles para la selección hecha."
+# Exponer el servidor de Flask
+server = app.server
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
