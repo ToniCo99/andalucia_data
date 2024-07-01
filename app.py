@@ -62,6 +62,9 @@ def update_line_chart(selected_provinces, selected_sectors):
     fig.update_traces(hovertemplate='Año=%{x}<br>Volumen=%{y:,.2f} €')
     return fig
 
+# Exponer el servidor de Flask
+server = app.server
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
     app.run_server(debug=False, host='0.0.0.0', port=port)
